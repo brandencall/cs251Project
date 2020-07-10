@@ -5,43 +5,31 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.Container;
 import java.awt.event.KeyListener;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class InstructionScreen extends JPanel implements ActionListener, KeyListener {
 
-    private JFrame instructionFrame;
-    private Container containerInstructions;
     private String jumpInstructions;
     private String duckInstructions;
     private String keyPressInstruction;
 
     public InstructionScreen() {
-        instructionFrame = new JFrame("Line Runner Instructions");
-        instructionFrame.setResizable(false);
-        instructionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        instructionFrame.setVisible(true);
 
         jumpInstructions = "Press the space bar or up arrow key to jump over objects";
         duckInstructions = "Press the down arrow key to duck under objects";
         keyPressInstruction = "To start the game press the space bar";
 
-        containerInstructions = instructionFrame.getContentPane();
+        this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
 
-        this.setPreferredSize(new Dimension(StartMenu.screenWidth, StartMenu.screenHeight));
-
-        containerInstructions.add(this);
+        LineRunner.gameContainer.add(this);
         addKeyListener(this);
     
         this.setFocusable(true);
         this.requestFocusInWindow();
         this.setLayout(null);
         this.setVisible(true);
-        instructionFrame.pack();
     }
 
     @Override
@@ -78,8 +66,10 @@ public class InstructionScreen extends JPanel implements ActionListener, KeyList
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            instructionFrame.dispose();
-            new LineRunnerGame();
+            LineRunner.gameContainer.remove(this);
+            LineRunner.gameContainer.add(new LineRunnerGame());
+            LineRunner.gameContainer.revalidate();
+            LineRunner.gameContainer.repaint();
         }     
     }
 }

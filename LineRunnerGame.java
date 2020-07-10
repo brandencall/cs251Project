@@ -17,11 +17,15 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     
 
     public LineRunnerGame(){
-        game = new JFrame("Line Runner");
-        game.setPreferredSize(new Dimension(StartMenu.screenWidth, StartMenu.screenHeight));
-        game.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        game.pack();
-        game.setVisible(true);
+        this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
+
+        LineRunner.gameContainer.add(this);
+        addKeyListener(this);
+
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        this.setLayout(null);
+        this.setVisible(true);
     }
 
     @Override
