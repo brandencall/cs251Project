@@ -13,9 +13,6 @@ import javax.swing.JPanel;
 
 public class LineRunnerGame extends JPanel implements ActionListener, KeyListener {
 
-    private JFrame game;
-    
-
     public LineRunnerGame(){
         this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
 
