@@ -15,6 +15,7 @@ public class DeathScreen extends JPanel implements ActionListener {
     private JButton replayButton;
     private JButton quiteButton;
     private String deathStatement;
+    private String scoreInfo;
 
     public DeathScreen(){
         this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
@@ -22,6 +23,7 @@ public class DeathScreen extends JPanel implements ActionListener {
         LineRunner.gameContainer.add(this);
 
         deathStatement = "You Ded :(";
+        scoreInfo = StoreHighScores.getScoreInfo();
 
         replayButton = new JButton("Replay");
         replayButton.addActionListener(this);
@@ -54,6 +56,10 @@ public class DeathScreen extends JPanel implements ActionListener {
         g.setFont(new Font("Times New Roman", Font.BOLD, 100));
         g.setColor(Color.BLACK);
         g.drawString(deathStatement, 250, 100);
+        
+        g.setFont(new Font("Times New Roman", Font.PLAIN, 50));
+        g.setColor(Color.black);
+        g.drawString(scoreInfo, 200, 600);
     }
 
     @Override
