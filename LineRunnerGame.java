@@ -281,6 +281,11 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
                 timerWalk.stop();
                 timerObstacle.stop();
                 timerJump.stop();
+                try {
+                    StoreHighScores.updateHighScores();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
                 LineRunner.gameContainer.remove(this);
                 LineRunner.gameContainer.add(new DeathScreen());
                 LineRunner.gameContainer.revalidate();
