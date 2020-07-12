@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-public class DeathScrean extends JPanel implements ActionListener {
+public class DeathScreen extends JPanel implements ActionListener {
 
     private JButton replayButton;
     private JButton quiteButton;
     private String deathStatement;
 
-    public DeathScrean(){
+    public DeathScreen(){
         this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
 
         LineRunner.gameContainer.add(this);
