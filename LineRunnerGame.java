@@ -16,8 +16,11 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     private JLabel jump2;
     private JLabel duck;
     private JLabel trashObstacle;
+    private JLabel bird1Obstacle;
+    private JLabel bird2Obstacle;
     private Rectangle playerHitBox;
     private Rectangle trashHitBox;
+    private Rectangle birdHitBox;
     private Timer timerWalk = new Timer(5,this);
     private Timer timerJump = new Timer(1, this);
     private Timer timerObstacle = new Timer(5, this);
@@ -30,9 +33,20 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     private double gravity = 0.001875;
     private int yinitial = 440;
     private int y = yinitial;
-    public int score = 0;
-    private int randy = 600;
+    public static int score = 0;
+    private int trashRandY = 600;
     private int trashX = 1000;
+    private int trashSpawn = 1000;
+    private int trashBackgroundCounter;
+    private int newTrashX = 1000;
+    private int birdSpawn = 0;
+    private int birdX = 1000;
+    private int birdRandY = 300;
+    private int birdBackgroundCounter;
+    private int newBirdX = 1000;
+    private boolean birdChange = true;
+    private boolean nextPhase = false;
+
 
     public LineRunnerGame(){
 
@@ -77,9 +91,23 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
         Image trashNewImg = trashOrigImg.getScaledInstance(135,165, Image.SCALE_SMOOTH);
         trashObstacle = new JLabel(new ImageIcon(trashNewImg));
         trashObstacle.setSize(135,165);
-        trashObstacle.setLocation(trashX,randy);
+        trashObstacle.setLocation(trashX, trashRandY);
+        ImageIcon bird1Orig = new ImageIcon("src/bird1.png");
+        Image bird1OrigImg = bird1Orig.getImage();
+        Image bird1NewImg = bird1OrigImg.getScaledInstance(135,60, Image.SCALE_SMOOTH);
+        bird1Obstacle = new JLabel(new ImageIcon(bird1NewImg));
+        bird1Obstacle.setSize(135,60);
+        bird1Obstacle.setLocation(birdX, birdRandY);
+        ImageIcon bird2Orig = new ImageIcon("src/bird2.png");
+        Image bird2OrigImg = bird2Orig.getImage();
+        Image bird2NewImg = bird2OrigImg.getScaledInstance(142,90, Image.SCALE_SMOOTH);
+        bird2Obstacle = new JLabel(new ImageIcon(bird2NewImg));
+        bird2Obstacle.setSize(142,90);
+        bird2Obstacle.setLocation(birdX, birdRandY);
         this.add(trashObstacle);
-        playerHitBox = new Rectangle(180, 430, 140, 330);
+        playerHitBox = new Rectangle(200, 430, 120, 330);
+
+
 
 
         timerWalk.start();
@@ -110,7 +138,10 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
         g2d.drawString("Score: ", 650, 53);
         g2d.drawString(Integer.toString(score), 790, 53);
 //        g2d.drawString(Double.toString(backgroundVel), 50,100);
+//        g2d.drawString(Integer.toString(backgroundCounter), 50,150);
+//        g2d.drawString(Boolean.toString(nextPhase),50,200);
 //        g2d.drawRect(playerHitBox.x,playerHitBox.y,playerHitBox.width,playerHitBox.height);
+
 
 
 
@@ -127,7 +158,7 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     @Override
     public void keyPressed(KeyEvent e) {
         // TODO Auto-generated method stub
-        if (e.getKeyCode() == (KeyEvent.VK_UP)) {
+        if (e.getKeyCode() == (KeyEvent.VK_UP) && playerHitBox.height != 220) {
             timerWalk.stop();
             timerJump.start();
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !timerJump.isRunning()){
@@ -156,13 +187,16 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     @Override
     public void actionPerformed(ActionEvent e) {
         Object action = e.getSource();
+
         if (action.equals(timerWalk)){
             if (walkCounter <= 60){
+
                 this.remove(walking1);
                 this.add(walking2);
                 this.revalidate();
                 this.repaint();
             } else if (walkCounter <= 120){
+
                 this.remove(walking2);
                 this.add(walking1);
                 this.revalidate();
@@ -172,23 +206,69 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
             }
             walkCounter++;
         } else if (action.equals(timerObstacle)) {
+            Rectangle result2 = new Rectangle(0,0,0,0);
             backgroundCounter ++;
-            trashX = trashX - (int)(backgroundVel);
+            trashBackgroundCounter++;
+            backgroundVel = getBackgroundVelInitial + (Math.log(backgroundCounter + 1)/10.4) + 0.00002*backgroundCounter;
+            trashX = newTrashX - (int)(backgroundVel*trashBackgroundCounter);
             trashHitBox = trashObstacle.getBounds();
-            backgroundVel = getBackgroundVelInitial + (Math.log(backgroundCounter)/100);
-            if (trashX < -135){
-                trashX = 1000 + (int) (Math.random()*1000);
+
+            if (trashX < -136){
+                trashBackgroundCounter = 0;
+                newTrashX = trashSpawn + (int) (Math.random()*trashSpawn);
                 // rand y from 550 - 635
-                randy = 555 + (int) (Math.random()*80);
+                trashRandY = 555 + (int) (Math.random()*80);
             }
-            trashObstacle.setLocation(trashX,randy);
-            Rectangle result = SwingUtilities.computeIntersection(
+            if(backgroundCounter == 12600){
+                nextPhase = true;
+
+            }
+            if(nextPhase && trashBackgroundCounter == 0){
+                this.add(bird1Obstacle);
+                this.add(bird2Obstacle);
+                trashSpawn = 1500;
+                birdSpawn = 1700;
+                birdX = 1000;
+                birdBackgroundCounter = 0;
+                nextPhase = false;
+            }
+            if(backgroundCounter > 12600 && trashSpawn == 1500){
+                birdBackgroundCounter++;
+                birdX = newBirdX - (int)(backgroundVel*trashBackgroundCounter);
+                birdHitBox = bird2Obstacle.getBounds();
+                birdHitBox.width = birdHitBox.width - 35;
+
+
+                if (birdX < -142){
+                    birdBackgroundCounter = 0;
+                    birdX = newBirdX + (int) (Math.random()*birdSpawn);
+                    birdRandY = 75 + (int) (Math.random()*(510 - birdHitBox.getHeight() - 75));
+                }
+                if (backgroundCounter % 60 == 0){
+                    this.bird1Obstacle.setVisible(birdChange);
+                    this.bird2Obstacle.setVisible(!birdChange);
+                    birdChange = !birdChange;
+                }
+                result2 = SwingUtilities.computeIntersection(
+                        (int)playerHitBox.getX(),
+                        (int)playerHitBox.getY(),
+                        (int) playerHitBox.getWidth(),
+                        (int)playerHitBox.getHeight(),
+                        birdHitBox);
+
+
+            }
+            bird1Obstacle.setLocation(birdX,birdRandY);
+            bird2Obstacle.setLocation(birdX,birdRandY);
+            trashObstacle.setLocation(trashX, trashRandY);
+            
+            Rectangle result1 = SwingUtilities.computeIntersection(
                     (int)playerHitBox.getX(),
                     (int)playerHitBox.getY(),
                     (int) playerHitBox.getWidth(),
                     (int)playerHitBox.getHeight(),
                     trashHitBox);
-            if(result.getHeight() > 0 && result.getWidth() > 0){
+            if((result1.getHeight() > 0 && result1.getWidth() > 0) || (result2.getHeight() > 0 && result2.getWidth() > 0)){
                 timerWalk.stop();
                 timerObstacle.stop();
                 timerJump.stop();
