@@ -9,24 +9,39 @@ public class StoreHighScores {
     private int MAX = 10;
 
     private static int currentScore = 0;
-    private static int highScore = 0;
+    private static int highScore = -1;
 
-    public static void updateHighScores() throws IOException {
+    public static void updateHighScores() {
         currentScore = LineRunnerGame.score;
-        Scanner reader = new Scanner(new File("src/highScores.txt"));
-        String token = reader.next();
-        
-        if(token != null){
-            highScore =  Integer.parseInt(token);
-        }
+        System.out.println(currentScore);
 
-        if(highScore < currentScore) {
-//            System.out.println("highscore < currentscore");
-//            System.out.println(currentScore);
-            FileWriter fw = new FileWriter("src/highScores.txt", false);
-            fw.write("" + currentScore);
-            highScore = currentScore;
-            fw.close();
+        String subDirct = Paths.get("").toUri().toString();
+        String subDirct1 = subDirct.substring(8);
+
+        String subDirct2 = subDirct1.replace("%20", " ");
+
+        File file = new File(subDirct2 + "highScores.txt");
+        BufferedReader BR = null;
+        try {
+            BR = new BufferedReader(new FileReader(file));
+            String token = BR.readLine();
+
+            if (token != null) {
+                highScore = Integer.parseInt(token);
+                System.out.println(highScore);
+            }
+
+            if (highScore < currentScore) {
+
+                FileWriter fw = new FileWriter(subDirct2 + "highScores.txt", false);
+                fw.write("" + currentScore);
+                highScore = currentScore;
+                fw.close();
+                BR.close();
+
+
+            }
+        } catch (IOException e){
 
         }
     }
@@ -37,4 +52,3 @@ public class StoreHighScores {
 
 
 }
-

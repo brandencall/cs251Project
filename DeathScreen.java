@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 
@@ -17,12 +18,14 @@ public class DeathScreen extends JPanel implements ActionListener {
     private String deathStatement;
     private String scoreInfo;
 
-    public DeathScreen(){
+    public DeathScreen() {
         this.setPreferredSize(new Dimension(LineRunner.screenWidth, LineRunner.screenHeight));
+
 
         LineRunner.gameContainer.add(this);
 
         deathStatement = "You Ded :(";
+        StoreHighScores.updateHighScores();
         scoreInfo = StoreHighScores.getScoreInfo();
 
         replayButton = new JButton("Replay");
@@ -56,7 +59,7 @@ public class DeathScreen extends JPanel implements ActionListener {
         g.setFont(new Font("Times New Roman", Font.BOLD, 100));
         g.setColor(Color.BLACK);
         g.drawString(deathStatement, 250, 100);
-        
+
         g.setFont(new Font("Times New Roman", Font.PLAIN, 50));
         g.setColor(Color.black);
         g.drawString(scoreInfo, 200, 600);
@@ -75,6 +78,6 @@ public class DeathScreen extends JPanel implements ActionListener {
         }
     }
 
-    
-    
+
+
 }
