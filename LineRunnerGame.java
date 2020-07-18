@@ -167,7 +167,7 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
     @Override
     public void keyPressed(KeyEvent e) {
         // TODO Auto-generated method stub
-        if (e.getKeyCode() == (KeyEvent.VK_UP) && playerHitBox.height != 220) {
+        if ((e.getKeyCode() == (KeyEvent.VK_SPACE) ||  e.getKeyCode() == (KeyEvent.VK_UP)) && playerHitBox.height != 220) {
             timerWalk.stop();
             timerJump.start();
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN && !timerJump.isRunning()){
@@ -281,11 +281,6 @@ public class LineRunnerGame extends JPanel implements ActionListener, KeyListene
                 timerWalk.stop();
                 timerObstacle.stop();
                 timerJump.stop();
-                try {
-                    StoreHighScores.updateHighScores();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
                 LineRunner.gameContainer.remove(this);
                 LineRunner.gameContainer.add(new DeathScreen());
                 LineRunner.gameContainer.revalidate();
